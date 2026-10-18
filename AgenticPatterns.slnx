@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Agentic.AgentCore/Agentic.AgentCore.csproj" />
+    <Project Path="src/Patterns.InboxTriage/Patterns.InboxTriage.csproj" />
+    <Project Path="src/Patterns.OpsAssistant/Patterns.OpsAssistant.csproj" />
+    <Project Path="src/Patterns.OwnerBriefing/Patterns.OwnerBriefing.csproj" />
+    <Project Path="src/Patterns.QuoteGenerator/Patterns.QuoteGenerator.csproj" />
+    <Project Path="src/Patterns.WeeklyReport/Patterns.WeeklyReport.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Agentic.AgentCore.Tests/Agentic.AgentCore.Tests.csproj" />
+  </Folder>
+</Solution>

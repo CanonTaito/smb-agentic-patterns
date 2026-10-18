@@ -1,0 +1,23 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings.user
+
+## Generated data
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+## Run artifacts (curated eval results in evals/results/ ARE committed)
+runs/
+*.traces.jsonl
+
+## OS / tooling
+Thumbs.db
+.DS_Store
+.idea/
+.opencode/
