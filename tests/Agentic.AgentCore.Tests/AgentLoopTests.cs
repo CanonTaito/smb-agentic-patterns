@@ -53,17 +53,40 @@ public class AgentLoopTests
         var client = new FakeOllamaClient()
             .EnqueueToolCall("get_date")
             .EnqueueToolCall("get_date")
-            .EnqueueToolCall("get_date") // third identical call must be stopped
+            .EnqueueToolCall("get_date") // 3rd identical call: rejected with a hint, not executed
+            .EnqueueToolCall("get_date") // still repeating despite the hint
+            .EnqueueToolCall("get_date") // third rejection stops the run
             .EnqueueText("never reached");
 
         var result = await Loop(client).RunAsync(new AgentOptions { UserTask = "date?" });
 
         Assert.Equal(StopReason.LoopDetected, result.StopReason);
-        Assert.Equal(3, result.Steps.Count);
+        Assert.Equal(5, result.Steps.Count);
         // the third call was rejected with a loop-detection message, not executed
-        var thirdCall = result.Steps[^1].ToolCalls[0];
+        var thirdCall = result.Steps[2].ToolCalls[0];
         Assert.False(thirdCall.Ok);
         Assert.Contains("loop detected", thirdCall.ResultJson);
+        // stopped runs still return usable text, never a blank string
+        Assert.False(string.IsNullOrWhiteSpace(result.FinalText));
+    }
+
+    [Fact]
+    public async Task Run_RejectedRepeat_GetsHintAndRecovers()
+    {
+        var client = new FakeOllamaClient()
+            .EnqueueToolCall("get_date")
+            .EnqueueToolCall("get_date")
+            .EnqueueToolCall("get_date") // rejected with a corrective hint
+            .EnqueueText("Today is 2026-10-18.");
+
+        var result = await Loop(client).RunAsync(new AgentOptions { UserTask = "date?" });
+
+        Assert.Equal(StopReason.Completed, result.StopReason);
+        Assert.Equal("Today is 2026-10-18.", result.FinalText);
+        Assert.False(result.Steps[2].ToolCalls[0].Ok);
+        // the hint really reached the model: the final request contains it as a tool message
+        Assert.Contains(client.CapturedRequests[^1],
+            m => m.Role == "tool" && m.Content != null && m.Content.Contains("loop detected"));
     }
 
     [Fact]
@@ -144,5 +167,37 @@ public class AgentLoopTests
         Assert.Contains("warehouse offline", fedBack.ResultJson);
         // the tool-result message really was appended to the model's context
         Assert.Contains(client.CapturedRequests[^1], m => m.Role == "tool");
+    }
+
+    [Fact]
+    public async Task Run_EmptyAssistantReply_NudgesInsteadOfEndingBlank()
+    {
+        var client = new FakeOllamaClient()
+            .Enqueue(() => new ChatMessage { Role = "assistant", Content = "" })
+            .EnqueueText("Job 1002 is in production.");
+
+        var result = await Loop(client, new ToolRegistry()).RunAsync(new AgentOptions { UserTask = "status of 1002?" });
+
+        Assert.Equal(StopReason.Completed, result.StopReason);
+        Assert.Equal("Job 1002 is in production.", result.FinalText);
+        Assert.Equal(2, result.Steps.Count);
+        // a user nudge telling the model its reply was empty was sent
+        Assert.Contains(client.CapturedRequests[^1],
+            m => m.Role == "user" && m.Content != null && m.Content.Contains("empty"));
+    }
+
+    [Fact]
+    public async Task Run_ReplyEmptyEvenAfterNudge_ReturnsNonEmptyFallback()
+    {
+        var client = new FakeOllamaClient()
+            .Enqueue(() => new ChatMessage { Role = "assistant", Content = "" })
+            .Enqueue(() => new ChatMessage { Role = "assistant", Content = "   " });
+
+        var result = await Loop(client, new ToolRegistry()).RunAsync(
+            new AgentOptions { UserTask = "status of 1002?", MaxSteps = 2 });
+
+        Assert.Equal(StopReason.Completed, result.StopReason);
+        Assert.False(string.IsNullOrWhiteSpace(result.FinalText));
+        Assert.Contains("no final text", result.FinalText);
     }
 }

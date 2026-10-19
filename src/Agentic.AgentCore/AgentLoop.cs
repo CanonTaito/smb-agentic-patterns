@@ -71,6 +71,7 @@ public sealed class AgentLoop
         var callCounts = new Dictionary<string, int>(StringComparer.Ordinal);
         var tokenTotal = TokenUsage.None;
         var stop = StopReason.MaxSteps;
+        var loopRejections = 0;
 
         for (var step = 1; step <= options.MaxSteps; step++)
         {
@@ -97,12 +98,25 @@ public sealed class AgentLoop
 
             if (toolCalls.Count == 0)
             {
+                // Small models sometimes emit an empty assistant message with no
+                // tool calls. Ending there would return a blank answer, so nudge
+                // (bounded by MaxSteps) instead.
+                if (string.IsNullOrWhiteSpace(assistantText) && step < options.MaxSteps)
+                {
+                    steps.Add(new StepRecord(step, assistantText, [], llmResult.Usage));
+                    messages.Add(ChatMessage.User(
+                        "Your reply was empty. Answer the user's question directly in plain text now, " +
+                        "using what the tools told you."));
+                    continue;
+                }
+
                 steps.Add(new StepRecord(step, assistantText, [], llmResult.Usage));
                 stop = StopReason.Completed;
                 break;
             }
 
             var records = new List<ToolCallRecord>();
+            var stopForLoop = false;
             foreach (var call in toolCalls)
             {
                 ct.ThrowIfCancellationRequested();
@@ -110,25 +124,21 @@ public sealed class AgentLoop
                 var args = call.Function.GetArguments();
                 var argsJson = args.ToJsonString();
 
-                // Loop detection: identical tool+args seen too often.
+                // Loop detection: identical tool+args past the limit are rejected
+                // with a structured hint instead of executed. The hint goes back
+                // to the model so a stuck run gets one chance to recover; if it
+                // keeps repeating (3 rejections), the run is stopped.
                 var key = $"{name}({argsJson})";
                 callCounts.TryGetValue(key, out var seen);
                 callCounts[key] = seen + 1;
                 if (seen + 1 > options.MaxIdenticalCalls)
                 {
+                    loopRejections++;
                     var msg = $"{{\"ok\":false,\"error\":\"loop detected: identical call '{name}' with the same arguments repeated {seen + 1} times\",\"hint\":\"You have already done this. Change the arguments, pick a different tool, or answer with what you have.\"}}";
                     messages.Add(ChatMessage.ToolResult(name, msg));
                     records.Add(new ToolCallRecord(name, argsJson, false, msg));
-                    steps.Add(new StepRecord(step, assistantText, records, llmResult.Usage));
-                    runSpan.SetTag("stopReason", "LoopDetected");
-                    runSpan.SetTag("steps", steps.Count);
-                    runSpan.SetTag("tokens", tokenTotal.TotalTokens);
-                    return new AgentRunResult
-                    {
-                        FinalText = assistantText ?? "",
-                        StopReason = StopReason.LoopDetected,
-                        Steps = steps,
-                    };
+                    if (loopRejections >= 3) stopForLoop = true;
+                    continue;
                 }
 
                 ToolResult result;
@@ -146,6 +156,12 @@ public sealed class AgentLoop
 
             steps.Add(new StepRecord(step, assistantText, records, llmResult.Usage));
 
+            if (stopForLoop)
+            {
+                stop = StopReason.LoopDetected;
+                break;
+            }
+
             if (tokenTotal.TotalTokens > options.MaxTotalTokens)
             {
                 stop = StopReason.MaxTokens;
@@ -159,8 +175,10 @@ public sealed class AgentLoop
         runSpan.SetTag("promptTokens", tokenTotal.PromptTokens);
         runSpan.SetTag("completionTokens", tokenTotal.CompletionTokens);
 
-        var final = steps.LastOrDefault()?.AssistantText
-                    ?? $"Agent stopped ({stop}) without a final answer after {steps.Count} step(s).";
+        var final = steps.LastOrDefault()?.AssistantText ?? "";
+        if (string.IsNullOrWhiteSpace(final))
+            final = $"The agent finished with stop reason {stop} after {steps.Count} step(s) but produced no " +
+                    "final text. The tool results are recorded in the trace.";
 
         if (stop != StopReason.Completed)
         {

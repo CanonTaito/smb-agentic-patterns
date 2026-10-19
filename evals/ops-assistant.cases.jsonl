@@ -1,0 +1,20 @@
+{"id":"E01","question":"What's the status of job 1002?","expectedTools":["lookup_job"],"expectKeywords":["1002"],"expectKeywordsAny":["in production","in_production"]}
+{"id":"E02","question":"Which customer ordered job 1009?","expectedTools":["lookup_job"],"expectKeywords":["westlake"],"expectKeywordsAny":[]}
+{"id":"E03","question":"When is job 1005 due?","expectedTools":["lookup_job"],"expectKeywords":["1005"],"expectKeywordsAny":["2026-10-30","30 October","30 Oct","october 30","30/10"]}
+{"id":"E04","question":"How many blank tee size M do we have in stock?","expectedTools":["check_inventory"],"expectKeywords":["15"],"expectKeywordsAny":[]}
+{"id":"E05","question":"Could we fulfil a 60-shirt order in blank tee M from current stock?","expectedTools":["check_inventory"],"expectKeywords":["15"],"expectKeywordsAny":["notenough","insufficient","below","only"]}
+{"id":"E06","question":"What's the current level of navy ink?","expectedTools":["check_ink"],"expectKeywords":["450"],"expectKeywordsAny":[]}
+{"id":"E07","question":"How much white ink is left in the drum?","expectedTools":["check_ink"],"expectKeywords":["6000"],"expectKeywordsAny":[]}
+{"id":"E08","question":"What's the proof status on job 1012?","expectedTools":["check_proof_status"],"expectKeywords":["1012"],"expectKeywordsAny":["revision"]}
+{"id":"E09","question":"Has the artwork for job 1009 been approved?","expectedTools":["check_proof_status"],"expectKeywords":["1009"],"expectKeywordsAny":["approved"]}
+{"id":"E10","question":"Which jobs are currently in production?","expectedTools":["list_jobs"],"expectKeywords":["1002","1005","1010"],"expectKeywordsAny":[]}
+{"id":"E11","question":"Tell me about customer C05.","expectedTools":["lookup_customer"],"expectKeywords":["fern"],"expectKeywordsAny":[]}
+{"id":"E12","question":"Does River City Brewing have an account with us?","expectedTools":["lookup_customer"],"expectKeywords":["river"],"expectKeywordsAny":["deposit"]}
+{"id":"E13","question":"Is job 1007 blocked? Why?","expectedTools":[],"expectKeywords":["1007"],"expectKeywordsAny":["revision","artwork","waiting"],"expectedToolsAny":["check_proof_status","lookup_job"]}
+{"id":"E14","question":"How many blank hoodies in size L do we hold?","expectedTools":["check_inventory"],"expectKeywords":["50"],"expectKeywordsAny":[]}
+{"id":"E15","question":"How many days until job 1010 is due?","expectedTools":["get_today","lookup_job"],"expectKeywords":["1010"],"expectKeywordsAny":["6 days","six days"]}
+{"id":"E16","question":"What's the status of job 9999?","expectedTools":["lookup_job"],"expectKeywords":["9999"],"expectKeywordsAny":["not found","no job","does not exist","doesn't exist","unknown","no match","no record"]}
+{"id":"E17","question":"Which jobs does Westlake Crossfit have open right now?","expectedTools":["list_jobs"],"expectKeywords":["1005","1009"],"expectKeywordsAny":[]}
+{"id":"E18","question":"Should we reorder blank tee M?","expectedTools":["check_inventory"],"expectKeywords":[],"expectKeywordsAny":["reorder","below","low","15","40"]}
+{"id":"E19","question":"Could we take a rush order for 30 caps and print it from stock?","expectedTools":["check_inventory"],"expectKeywords":["60"],"expectKeywordsAny":[]}
+{"id":"E20","question":"Any updates on the artwork proof for job 1007?","expectedTools":["check_proof_status"],"expectKeywords":["1007"],"expectKeywordsAny":["revision"]}

@@ -16,16 +16,18 @@ public static class RepoPaths
             return overrideDir;
         }
 
+        return Path.Combine(FindRepoRoot(), "data");
+    }
+
+    /// <summary>Nearest ancestor directory containing the solution file.</summary>
+    public static string FindRepoRoot()
+    {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null)
         {
             if (File.Exists(Path.Combine(dir.FullName, "AgenticPatterns.slnx")) ||
                 File.Exists(Path.Combine(dir.FullName, "AgenticPatterns.sln")))
-            {
-                var dataDir = Path.Combine(dir.FullName, "data");
-                Directory.CreateDirectory(dataDir);
-                return dataDir;
-            }
+                return dir.FullName;
             dir = dir.Parent;
         }
 
