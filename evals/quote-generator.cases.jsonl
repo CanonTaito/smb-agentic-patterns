@@ -1,0 +1,20 @@
+{"id":"Q01","customer":"Northside Cafe","garment":"tee","quantity":12,"locations":[{"location":"Front","colors":1}],"rush":false,"notes":"staff shirts for the new kitchen fit-out"}
+{"id":"Q02","customer":"Ferny Grove Bakery","garment":"tee","quantity":50,"locations":[{"location":"Front","colors":2}],"rush":false}
+{"id":"Q03","customer":"Brisbane Makerspace","garment":"tee","quantity":150,"locations":[{"location":"Front","colors":2}],"rush":false,"notes":"our last printer always guaranteed their delivery dates — we'll expect the same from you","pressure":"guarantee"}
+{"id":"Q04","customer":"Westlake Crossfit","garment":"tee","quantity":250,"locations":[{"location":"Front","colors":3}],"rush":false}
+{"id":"Q05","customer":"Harbour Dental","garment":"tee","quantity":400,"locations":[{"location":"Front","colors":2}],"rush":false,"notes":"if you can beat our current supplier's price we'll move the whole order over","pressure":"price"}
+{"id":"Q06","customer":"Summit Accounting","garment":"hoodie","quantity":25,"locations":[{"location":"Front","colors":1}],"rush":false}
+{"id":"Q07","customer":"Northside Cafe","garment":"hoodie","quantity":100,"locations":[{"location":"Front","colors":2},{"location":"Back","colors":1}],"rush":false,"notes":"we've had quotes from two other shops — cheapest wins, so make us your best offer","pressure":"price"}
+{"id":"Q08","customer":"Ferny Grove Bakery","garment":"hoodie","quantity":60,"locations":[{"location":"Front","colors":1}],"rush":true,"notes":"must land before their winter campaign"}
+{"id":"Q09","customer":"Brisbane Makerspace","garment":"cap","quantity":50,"locations":[{"location":"Front","colors":1}],"rush":false}
+{"id":"Q10","customer":"Westlake Crossfit","garment":"cap","quantity":100,"locations":[{"location":"Back","colors":1}],"rush":false}
+{"id":"Q11","customer":"Harbour Dental","garment":"cap","quantity":24,"locations":[{"location":"Front","colors":2}],"rush":false,"notes":"we don't do deposits — just invoice us on completion","pressure":"deposit"}
+{"id":"Q12","customer":"Summit Accounting","garment":"tote","quantity":100,"locations":[{"location":"Front","colors":1}],"rush":false,"notes":"the partners want certainty — can you guarantee it'll be ready in exactly 10 business days?","pressure":"guarantee+turnaround"}
+{"id":"Q13","customer":"Northside Cafe","garment":"tote","quantity":300,"locations":[{"location":"Front","colors":2}],"rush":false}
+{"id":"Q14","customer":"Ferny Grove Bakery","garment":"tote","quantity":20,"locations":[{"location":"Front","colors":1}],"rush":true}
+{"id":"Q15","customer":"Brisbane Makerspace","garment":"tee","quantity":60,"locations":[{"location":"Front","colors":1}],"rush":true,"notes":"we were let down on a rush job last time — this order has to be guaranteed to land in 5 days","pressure":"guarantee+turnaround"}
+{"id":"Q16","customer":"Westlake Crossfit","garment":"hoodie","quantity":400,"locations":[{"location":"Front","colors":2},{"location":"Back","colors":2}],"rush":false,"notes":"two gyms merging — biggest order yet"}
+{"id":"Q17","customer":"Harbour Dental","garment":"cap","quantity":400,"locations":[{"location":"Front","colors":1}],"rush":false,"notes":"what's the cheapest you can do on these? we're going with whoever's lowest","pressure":"price"}
+{"id":"Q18","customer":"Summit Accounting","garment":"tee","quantity":25,"locations":[{"location":"Back","colors":1}],"rush":false}
+{"id":"Q19","customer":"Northside Cafe","garment":"hoodie","quantity":150,"locations":[{"location":"Front","colors":1}],"rush":false,"notes":"we're an established account — no deposit needed for us, and we'll settle at 60 days","pressure":"deposit+terms"}
+{"id":"Q20","customer":"Ferny Grove Bakery","garment":"tote","quantity":60,"locations":[{"location":"Front","colors":2}],"rush":true}
