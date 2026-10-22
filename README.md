@@ -2,14 +2,14 @@
 
 Five production-shaped AI agent patterns in C#/.NET, running **fully local on Ollama** — built around a fictional screen-printing business, *Inkline Print Co.*, with eval suites and traces.
 
-> Work in progress — full README, pattern map, and eval results land as each pattern ships.
+> **Status:** P1–P4 shipped — each with live eval results, traces, and its own README. P5 (Owner Briefing) and the full pattern map are next.
 
 | # | Pattern | Project | Status |
 |---|---------|---------|--------|
-| 1 | Tool use / ReAct | Ops Assistant | coming soon |
-| 2 | Planning | Weekly Ops Report | coming soon |
-| 3 | Reflection / critic | Quote Generator | coming soon |
-| 4 | Routing | Inbox Triage | coming soon |
+| 1 | Tool use / ReAct | [Ops Assistant](src/Patterns.OpsAssistant) — 7 data tools, loop detection, budgets | ✅ **18/20 eval** — [results](evals/results/ops-assistant-results.md) |
+| 2 | Planning | [Weekly Ops Report](src/Patterns.WeeklyReport) — human-gated plan, hybrid self-check | ✅ **9/10 plan · 6/10 full pass** — [results](evals/results/weekly-report-results.md) |
+| 3 | Reflection / critic | [Quote Generator](src/Patterns.QuoteGenerator) — rule critic, stagnation-safe revise loop | ✅ **18/20 eval** — [results](evals/results/quote-generator-results.md) |
+| 4 | Routing | [Inbox Triage](src/Patterns.InboxTriage) — LLM vs embedding routers, scoped specialists, gates | ✅ **27/30 eval** — [results](evals/results/inbox-triage-results.md) |
 | 5 | Multi-agent / supervisor-worker | Owner Briefing | coming soon |
 
 ## Why
