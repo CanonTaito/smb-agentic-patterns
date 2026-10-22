@@ -99,10 +99,13 @@ public sealed class OllamaClient : IOllamaClient, IDisposable
             ["model"] = model ?? DefaultEmbedModel,
             ["input"] = input,
         };
-        using var response = await _http.PostAsJsonAsync($"{BaseUrl}/api/embeddings", body, JsonOpts, ct);
+        using var response = await _http.PostAsJsonAsync($"{BaseUrl}/api/embed", body, JsonOpts, ct);
         response.EnsureSuccessStatusCode();
         var payload = await response.Content.ReadFromJsonAsync<OllamaEmbedResponse>(JsonOpts, ct);
-        return payload?.Embedding ?? throw new InvalidOperationException("Ollama returned no embedding.");
+        var vector = payload?.Embeddings is { Length: > 0 } first ? first[0] : null;
+        return vector is { Length: > 0 }
+            ? vector
+            : throw new InvalidOperationException("Ollama returned no embedding.");
     }
 
     /// <summary>Health check used by eval runners before a suite starts.</summary>

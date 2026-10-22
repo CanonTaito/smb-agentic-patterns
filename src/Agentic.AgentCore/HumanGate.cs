@@ -1,10 +1,11 @@
 namespace Agentic.AgentCore;
 
-public enum GateDecision { Approved, Edited, Rejected }
+public enum GateDecision { Approved, Edited, Rejected, Escalated }
 
 public sealed record GateResult(GateDecision Decision, string? Content, string? Note)
 {
-    public bool ShouldProceed => Decision != GateDecision.Rejected;
+    /// <summary>Only an explicit approve or edit sends the artefact; escalations are held for the owner.</summary>
+    public bool ShouldProceed => Decision is GateDecision.Approved or GateDecision.Edited;
 }
 
 /// <summary>
@@ -30,6 +31,36 @@ public static class HumanGate
             output.WriteLine("[gate] AUTO-APPROVED: " + actionDescription);
             return new GateResult(GateDecision.Approved, proposedOutput, "auto-approved (non-interactive run)");
         }
+
+        return await PromptAsync(actionDescription, proposedOutput, output, input, ct);
+    }
+
+    /// <summary>
+    /// Hold an action for the owner no matter what mode the run is in — used
+    /// where even a non-interactive run must not auto-send (e.g. quotes over
+    /// the approval threshold). The artefact is returned as Content but
+    /// ShouldProceed is false, so callers report "held, not sent".
+    /// </summary>
+    public static Task<GateResult> EscalateAsync(
+        string actionDescription,
+        string proposedOutput,
+        TextWriter? output = null,
+        CancellationToken ct = default)
+    {
+        output ??= Console.Out;
+        output.WriteLine("[gate] ESCALATED to owner: " + actionDescription);
+        output.WriteLine("        held — not sent until the owner reviews it.");
+        return Task.FromResult(
+            new GateResult(GateDecision.Escalated, proposedOutput, "escalated to owner (threshold rule)"));
+    }
+
+    private static async Task<GateResult> PromptAsync(
+        string actionDescription,
+        string proposedOutput,
+        TextWriter output,
+        TextReader? input,
+        CancellationToken ct)
+    {
 
         output.WriteLine();
         output.WriteLine("================ HUMAN APPROVAL REQUIRED ================");

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Agentic.AgentCore;
 
-// Wire models for Ollama's /api/chat and /api/embeddings.
+// Wire models for Ollama's /api/chat and /api/embed.
 // Kept deliberately close to the JSON contract so the raw loop stays debuggable.
 
 public sealed class ChatMessage
@@ -105,10 +105,13 @@ public sealed class OllamaChatResponse
     public long TotalDurationNs { get; set; }
 }
 
+// /api/embed (plural): the legacy /api/embeddings endpoint returns
+// {"embedding":[]} on Ollama 0.40+, so we post to /api/embed and read
+// the first vector of "embeddings".
 public sealed class OllamaEmbedResponse
 {
-    [JsonPropertyName("embedding")]
-    public float[]? Embedding { get; set; }
+    [JsonPropertyName("embeddings")]
+    public float[][]? Embeddings { get; set; }
 }
 
 public sealed record TokenUsage(int PromptTokens, int CompletionTokens)

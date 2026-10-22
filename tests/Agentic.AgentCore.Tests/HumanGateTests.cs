@@ -51,4 +51,17 @@ public class HumanGateTests
         Assert.Equal(GateDecision.Edited, result.Decision);
         Assert.Equal("Edited line one." + Environment.NewLine + "Edited line two.", result.Content);
     }
+
+    [Fact]
+    public async Task Escalate_HoldsContentWithoutPrompting()
+    {
+        var output = new StringWriter();
+
+        var result = await HumanGate.EscalateAsync("send quote over threshold", "Quote: $4,000", output);
+
+        Assert.Equal(GateDecision.Escalated, result.Decision);
+        Assert.False(result.ShouldProceed);
+        Assert.Equal("Quote: $4,000", result.Content);
+        Assert.Contains("ESCALATED", output.ToString());
+    }
 }
