@@ -96,22 +96,28 @@ public sealed class Tracer
 
     internal void Complete(Span span)
     {
-        lock (_lock) _spans.Add(span);
-
-        if (_jsonlPath is not null)
+        // Fan-out patterns close spans from sibling tasks at once; the JSONL
+        // sink is a single file, so append under the same lock that guards the
+        // span list or concurrent runs collide on the handle.
+        lock (_lock)
         {
-            var line = JsonSerializer.Serialize(new
+            _spans.Add(span);
+
+            if (_jsonlPath is not null)
             {
-                spanId = span.Id,
-                parentId = span.ParentId,
-                name = span.Name,
-                kind = span.Kind.ToString(),
-                startedUtc = span.StartedUtc,
-                durationMs = span.DurationMs,
-                span.Tags,
-                span.Events,
-            });
-            File.AppendAllText(_jsonlPath, line + Environment.NewLine);
+                var line = JsonSerializer.Serialize(new
+                {
+                    spanId = span.Id,
+                    parentId = span.ParentId,
+                    name = span.Name,
+                    kind = span.Kind.ToString(),
+                    startedUtc = span.StartedUtc,
+                    durationMs = span.DurationMs,
+                    span.Tags,
+                    span.Events,
+                });
+                File.AppendAllText(_jsonlPath, line + Environment.NewLine);
+            }
         }
 
         // pop ambient span if it is this one, restoring its parent

@@ -68,7 +68,14 @@ public sealed class OllamaClient : IOllamaClient, IDisposable
             ["model"] = model ?? DefaultModel,
             ["messages"] = JsonSerializer.SerializeToNode(messages, JsonOpts)!.AsArray(),
             ["stream"] = false,
-            ["options"] = new JsonObject { ["temperature"] = temperature },
+            ["options"] = new JsonObject
+            {
+                ["temperature"] = temperature,
+                // Generation cap: a small model can fall into a repetition loop
+                // and otherwise run until the HTTP timeout. Every artefact in
+                // this repo fits comfortably under 1k tokens.
+                ["num_predict"] = 1024,
+            },
         };
         if (tools is { Count: > 0 })
             body["tools"] = JsonSerializer.SerializeToNode(tools, JsonOpts)!.AsArray();

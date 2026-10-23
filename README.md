@@ -2,7 +2,7 @@
 
 Five production-shaped AI agent patterns in C#/.NET, running **fully local on Ollama** — built around a fictional screen-printing business, *Inkline Print Co.*, with eval suites and traces.
 
-> **Status:** P1–P4 shipped — each with live eval results, traces, and its own README. P5 (Owner Briefing) and the full pattern map are next.
+> **Status:** All five patterns shipped — each with live eval results, traces, and its own README.
 
 | # | Pattern | Project | Status |
 |---|---------|---------|--------|
@@ -10,7 +10,7 @@ Five production-shaped AI agent patterns in C#/.NET, running **fully local on Ol
 | 2 | Planning | [Weekly Ops Report](src/Patterns.WeeklyReport) — human-gated plan, hybrid self-check | ✅ **9/10 plan · 6/10 full pass** — [results](evals/results/weekly-report-results.md) |
 | 3 | Reflection / critic | [Quote Generator](src/Patterns.QuoteGenerator) — rule critic, stagnation-safe revise loop | ✅ **18/20 eval** — [results](evals/results/quote-generator-results.md) |
 | 4 | Routing | [Inbox Triage](src/Patterns.InboxTriage) — LLM vs embedding routers, scoped specialists, gates | ✅ **27/30 eval** — [results](evals/results/inbox-triage-results.md) |
-| 5 | Multi-agent / supervisor-worker | Owner Briefing | coming soon |
+| 5 | Multi-agent / supervisor-worker | [Owner Briefing](src/Patterns.OwnerBriefing) — supervisor plan, parallel workers, hand-off repair, single-agent cost comparison | ✅ **32/35 multi vs 30/35 single** — [results](evals/results/owner-briefing-results.md) |
 
 ## Why
 

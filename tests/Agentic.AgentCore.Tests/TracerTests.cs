@@ -64,6 +64,52 @@ public class TracerTests
     }
 
     [Fact]
+    public async Task ParallelSpans_FromTaskWhenAll_AreAllRecorded()
+    {
+        var tracer = new Tracer();
+
+        async Task WorkerAsync(int i)
+        {
+            using var span = tracer.StartSpan($"worker {i}", SpanKind.Agent);
+            await Task.Delay(10);
+            span.SetTag("worker", i);
+        }
+
+        await Task.WhenAll(Enumerable.Range(0, 12).Select(WorkerAsync));
+
+        var spans = tracer.Spans;
+        Assert.Equal(12, spans.Count);
+        Assert.All(spans, s => Assert.Null(s.ParentId));
+        Assert.Equal(12, spans.Select(s => s.Id).Distinct().Count());
+    }
+
+    [Fact]
+    public async Task JsonlSink_HandlesConcurrentSpansWithoutLosingLines()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"trace-{Guid.NewGuid():N}.jsonl");
+        try
+        {
+            var tracer = new Tracer(jsonlPath: path);
+
+            async Task WorkerAsync(int i)
+            {
+                using var span = tracer.StartSpan($"worker {i}", SpanKind.Agent);
+                await Task.Delay(1);
+            }
+
+            await Task.WhenAll(Enumerable.Range(0, 20).Select(WorkerAsync));
+
+            var lines = File.ReadAllLines(path);
+            Assert.Equal(20, lines.Length);
+            Assert.All(lines, l => Assert.Contains("\"spanId\"", l));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void Tags_AreRecordedOnSpan()
     {
         var tracer = new Tracer();
