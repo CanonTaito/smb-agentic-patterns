@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Agentic.AgentCore/Agentic.AgentCore.csproj" />
+    <Project Path="src/Agentic.McpServer/Agentic.McpServer.csproj" />
     <Project Path="src/Patterns.InboxTriage/Patterns.InboxTriage.csproj" />
     <Project Path="src/Patterns.OpsAssistant/Patterns.OpsAssistant.csproj" />
     <Project Path="src/Patterns.OwnerBriefing/Patterns.OwnerBriefing.csproj" />

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agentic.AgentCore\Agentic.AgentCore.csproj" />
+    <ProjectReference Include="..\Patterns.OwnerBriefing\Patterns.OwnerBriefing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+  </ItemGroup>
+
+</Project>
