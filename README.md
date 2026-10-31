@@ -2,7 +2,7 @@
 
 Five production-shaped AI agent patterns in C#/.NET, running **fully local on Ollama** — built around a fictional screen-printing business, *Inkline Print Co.*, with eval suites and traces.
 
-> **Status:** All five patterns shipped — each with live eval results, traces, and its own README.
+> **Status:** All five patterns shipped — each with live eval results, traces, and its own README. MCP server added to expose Inkline tools to compatible AI clients.
 
 | # | Pattern | Project | Status |
 |---|---------|---------|--------|
@@ -15,6 +15,16 @@ Five production-shaped AI agent patterns in C#/.NET, running **fully local on Ol
 ## Why
 
 Most agent demos are notebooks with no evals, no traces, and no failure handling. This repo builds each of the five core agentic design patterns **by hand** — no agent frameworks — with the engineering the guide says production demands: structured tool errors, budgets, loop detection, human approval gates, and measurable evals.
+
+## MCP Server (local)
+
+Expose Inkline tools to MCP-compatible clients (e.g. OpenCode, Claude Desktop) without rebuilding agents.
+
+```bash
+dotnet run --project src/Agentic.McpServer
+```
+
+Tools: `price_quote`, `lookup_job`, `list_at_risk_jobs`, `get_sales_kpis` (reuses `QuoteEngine`, `InklineDb`, and `InklineData`). Configure in your client's MCP settings (stdio).
 
 ## License
 
